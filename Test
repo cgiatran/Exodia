@@ -1,3 +1,20 @@
-Test
-hi
-jiininininininin
+import uvage
+camera = uvage.Camera(800,600)
+squishtest = uvage.from_image(400,400,"Avocado_Squish.png")
+right_arrow = uvage.from_image(200,0,"Right Arrow.png")
+arrows = [
+    right_arrow
+]
+squishtest.width = 400
+def handle_arrows():
+    global arrows
+    for arrow in arrows:
+        arrow.width = 100
+        camera.draw(arrow)
+def tick():
+    handle_arrows()
+    camera.draw(squishtest)
+    camera.draw(right_arrow)
+    camera.display()
+    camera.clear("White")
+uvage.timer_loop(30, tick)
