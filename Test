@@ -1,20 +1,56 @@
 import uvage
 camera = uvage.Camera(800,600)
-squishtest = uvage.from_image(400,400,"Avocado_Squish.png")
-right_arrow = uvage.from_image(200,0,"Right Arrow.png")
-arrows = [
-    right_arrow
+squishtest = uvage.from_image(400,450,"pineapple.png")
+arrows = uvage.load_sprite_sheet("Arrows.png",4,2)
+squishtest.width = 500
+base_arrows_list = [
+    ["left arrow", uvage.from_image(250,500,arrows[0]), False, False],
+    ["up arrow", uvage.from_image(450,490,arrows[2]), False, False],
+    ["right arrow", uvage.from_image(550,500,arrows[4]), False, False],
+    ["down arrow", uvage.from_image(350,510,arrows[6]), False, False]
 ]
-squishtest.width = 400
-def handle_arrows():
-    global arrows
-    for arrow in arrows:
-        arrow.width = 100
-        camera.draw(arrow)
+falling_arrows = [
+    []
+]
+def base_arrows():
+    left_arrow = base_arrows_list[0]
+    up_arrow = base_arrows_list[1]
+    right_arrow = base_arrows_list[2]
+    down_arrow = base_arrows_list[3]
+    for arrow in base_arrows_list:
+        camera.draw(arrow[1])
+    if uvage.is_pressing("left arrow"):
+        left_arrow[1].image = arrows[1]
+    if not uvage.is_pressing("left arrow"):
+        left_arrow[1].image = arrows[0]
+    if uvage.is_pressing("up arrow"):
+        up_arrow[1].image = arrows[3]
+    if not uvage.is_pressing("up arrow"):
+        up_arrow[1].image = arrows[2]
+    if uvage.is_pressing("right arrow"):
+        right_arrow[1].image = arrows[5]
+    if not uvage.is_pressing("right arrow"):
+        right_arrow[1].image = arrows[4]
+    if uvage.is_pressing("down arrow"):
+        down_arrow[1].image = arrows[7]
+    if not uvage.is_pressing("down arrow"):
+        down_arrow[1].image = arrows[6]
+def falling_arrows():
+def tap_check(key):
+    global press_cancel
+    global time
+    if uvage.is_pressing(key):
+        time += 1 / 30
+        if time > 0.5:
+            press_cancel = True
+    if not uvage.is_pressing(key):
+        time = 0
+        press_cancel = False
+    return press_cancel
+
 def tick():
-    handle_arrows()
     camera.draw(squishtest)
-    camera.draw(right_arrow)
+    base_arrows()
     camera.display()
     camera.clear("White")
 uvage.timer_loop(30, tick)
